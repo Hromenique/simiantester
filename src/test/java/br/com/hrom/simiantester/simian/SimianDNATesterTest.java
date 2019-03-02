@@ -16,9 +16,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 
 @RunWith(JUnitParamsRunner.class)
-public class IsSimianTest {
+public class SimianDNATesterTest {
 
-    private IsSimian tester = new IsSimian();
+    private SimianDNATester tester = new SimianDNATester();
 
     @Test
     @Parameters(method = "humanDNAValues, simianDNAValues")

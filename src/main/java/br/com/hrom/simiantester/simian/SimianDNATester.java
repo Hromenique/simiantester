@@ -1,9 +1,15 @@
 package br.com.hrom.simiantester.simian;
 
-public class IsSimian {
+public class SimianDNATester {
 
     private static final int MIN_BASES_TO_SIMIAN = 4;
 
+    /**
+     * Verify if a DNA belongs a simian
+     *
+     * @param dna DNA to be verified
+     * @return true if the DNA belongs a simian, otherwise false
+     */
     public boolean isSimian(String[] dna) {
         Cell[][] matrix = new Cell[dna.length][dna.length];
 
@@ -32,10 +38,16 @@ public class IsSimian {
         }
 
         return false;
-
     }
 
-
+    /**
+     * Get a {@link Cell} from matrix
+     *
+     * @param r      row index
+     * @param c      column index
+     * @param matrix the matrix of {@link Cell} to get the cell
+     * @return if r and c are valid indexes in matrix, return a Cell, otherwise {@link Cell#NULL} (is null value Cell)
+     */
     private Cell getCellFromMatrix(int r, int c, Cell[][] matrix) {
         if (r < 0 || r > matrix.length - 1 || c < 0 || c > matrix.length - 1) {
             return Cell.NULL;
@@ -44,8 +56,15 @@ public class IsSimian {
         return matrix[r][c];
     }
 
+    /**
+     * Represents a cell in DNA matrix. Each cell knows how many others cells with same nitrogen base it has
+     * on the left, above and on the left, above, above on the right
+     */
     private static class Cell {
 
+        /**
+         * A null value Cell
+         */
         private static final Cell NULL = new Cell(' ', 0, 0, 0, 0);
 
         //nitrogen base: A T C G
