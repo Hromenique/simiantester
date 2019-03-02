@@ -4,10 +4,7 @@ import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.core.io.ClassPathResource;
 
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -27,45 +24,171 @@ public class SimianDNATesterTest {
                 .isEqualTo(expectedResult);
     }
 
-    private Object[] humanDNAValues() throws Exception {
-        List<String[]> dnas = readDNAFile("humanDNAs.txt");
-        Object[] params = new Object[dnas.size()];
+    private Object[] humanDNAValues() {
+        List<Object> params = new ArrayList<>();
+        String[] dna;
 
-        for (int i = 0; i < dnas.size(); i++) {
-            params[i] = new Object[]{dnas.get(i), false};
-        }
+        dna = new String[]{
+                "A"
+        };
+        params.add(dnaAndExpectedResult(dna, false));
 
-        return params;
+        dna = new String[]{
+                "A A A",
+                "C C C",
+                "G G G"
+        };
+        params.add(dnaAndExpectedResult(dna, false));
+
+        dna = new String[]{
+                "A A A T",
+                "A T T T",
+                "C C C G",
+                "C G G G"
+        };
+        params.add(dnaAndExpectedResult(dna, false));
+
+        dna = new String[]{
+                "A T C G",
+                "A T C G",
+                "A T C G",
+                "G C T A"
+        };
+        params.add(dnaAndExpectedResult(dna, false));
+
+        dna = new String[]{
+                "A T C C",
+                "T A C G",
+                "T C A G",
+                "T T T G"
+        };
+        params.add(dnaAndExpectedResult(dna, false));
+
+        dna = new String[]{
+                "A T C G A A",
+                "T A C A A A",
+                "G G A A C C",
+                "T T T C C C",
+                "T T C A A A",
+                "G G G T T T"
+        };
+        params.add(dnaAndExpectedResult(dna, false));
+
+        dna = new String[]{
+                "A T G C G A",
+                "C A G T G C",
+                "T T A T T T",
+                "A G A C G G",
+                "G C G T C A",
+                "T C A C T G"};
+        params.add(dnaAndExpectedResult(dna, false));
+
+        return params.toArray();
     }
 
-    private Object[] simianDNAValues() throws Exception {
-        List<String[]> dnas = readDNAFile("simianDNAs.txt");
-        Object[] params = new Object[dnas.size()];
+    private Object[] simianDNAValues() {
+        List<Object> params = new ArrayList<>();
+        String[] dna;
 
-        for (int i = 0; i < dnas.size(); i++) {
-            params[i] = new Object[]{dnas.get(i), true};
-        }
+        dna = new String[]{
+                "C T G A G A",
+                "C C C C T G",
+                "T A T T G T",
+                "A G A G G G",
+                "C C C A T G",
+                "A A A G G G"
+        };
+        params.add(dnaAndExpectedResult(dna, true));
 
-        return params;
+        dna = new String[]{
+                "A T C G A A",
+                "T A C A A A",
+                "G G A A C C",
+                "T T T C C C",
+                "T T C A A A",
+                "G G T T T T"
+        };
+        params.add(dnaAndExpectedResult(dna, true));
+
+        dna = new String[]{
+                "A T C G A A",
+                "T A C A A A",
+                "T G A A C C",
+                "T T T C C C",
+                "T T C A A A",
+                "G G G T T T"
+        };
+        params.add(dnaAndExpectedResult(dna, true));
+
+        dna = new String[]{
+                "A T C G A A",
+                "T A C A C A",
+                "G G A A C C",
+                "T T T C C C",
+                "T T C A C A",
+                "G G G T T T"
+        };
+        params.add(dnaAndExpectedResult(dna, true));
+
+        dna = new String[]{
+                "C T G A G A",
+                "C T A T G C",
+                "T A T T G T",
+                "A G A G G G",
+                "C C C C T A",
+                "T C A C T G"
+        };
+        params.add(dnaAndExpectedResult(dna, true));
+
+        dna = new String[]{
+                "A T C G A A",
+                "T A C A A A",
+                "G G A A C C",
+                "T T T A C C",
+                "T T C A A A",
+                "G G G T T T"
+        };
+        params.add(dnaAndExpectedResult(dna, true));
+
+        dna = new String[]{
+                "A T C G A A",
+                "T A C A A A",
+                "G G A A C C",
+                "T T A G C C",
+                "T T C A A A",
+                "G G G T T T"
+        };
+        params.add(dnaAndExpectedResult(dna, true));
+
+        dna = new String[]{
+                "A T C G A A",
+                "T A C A A A",
+                "G G A A C C",
+                "T T G G C C",
+                "T T C G A A",
+                "G G G T G T"
+        };
+        params.add(dnaAndExpectedResult(dna, true));
+
+        dna = new String[]{
+                "A T G C G A",
+                "C A G T G C",
+                "T T A T T T",
+                "A G A A G G",
+                "G C G T C A",
+                "T C A C T G"};
+        params.add(dnaAndExpectedResult(dna, true));
+
+
+        return params.toArray();
     }
 
-    private List<String[]> readDNAFile(String filePath) throws Exception {
-        String path = new ClassPathResource(filePath).getFile().getPath();
-        List<String> lines = Files.readAllLines(Paths.get(path));
-
-        List<String[]> dnas = new ArrayList<>();
-        List<String> dna = new ArrayList<>();
-
-        for (String line : lines) {
-            if (!line.equals("")) {
-                dna.add(line);
-            } else {
-                String[] newDNA = dna.stream().map(l -> l.replaceAll(" ", "")).toArray(String[]::new);
-                dnas.add(newDNA);
-                dna = new ArrayList<>();
-            }
-        }
-
-        return dnas;
+    private Object[] dnaAndExpectedResult(String[] dna, boolean expectedResult) {
+        return new Object[]{formatDNA(dna), expectedResult};
     }
+
+    private String[] formatDNA(String[] dna) {
+        return Arrays.stream(dna).map(l -> l.replaceAll(" ", "")).toArray(String[]::new);
+    }
+
 }
