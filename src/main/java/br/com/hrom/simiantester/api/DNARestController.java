@@ -20,7 +20,7 @@ public class DNARestController {
     }
 
 
-    @PostMapping(path = "/dna", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PostMapping(path = "/simian", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity isSimian(@RequestBody DNARequest request) {
 
         boolean isSimian = this.dnaService.isSimian(request.getDna());
