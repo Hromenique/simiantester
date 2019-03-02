@@ -46,7 +46,7 @@ public class DNARestControllerTest {
                 .append("}").toString();
 
         tester.perform(
-                post("/dna").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE).content(request))
+                post("/simian").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE).content(request))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string(isEmptyOrNullString()));
@@ -72,7 +72,7 @@ public class DNARestControllerTest {
                 .append("}").toString();
 
         tester.perform(
-                post("/dna").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE).content(request))
+                post("/simian").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE).content(request))
                 .andDo(print())
                 .andExpect(status().isForbidden())
                 .andExpect(content().string(""));

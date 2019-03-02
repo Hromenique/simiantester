@@ -16,10 +16,10 @@ public class DNATester {
 
 
     /**
-     * Verify if a DNA belongs a dna
+     * Verify if a DNA belongs a simian
      *
      * @param dna DNA to be verified
-     * @return true if the DNA belongs a dna, otherwise false
+     * @return true if the DNA belongs a simian, otherwise false
      */
     public boolean isSimian(String[] dna) {
         Cell[][] matrix = new Cell[dna.length][dna.length];
@@ -52,10 +52,10 @@ public class DNATester {
     }
 
     /**
-     * Validate if is a valid DNA and verify if it belongs to a dna
+     * Validate if is a valid DNA and verify if it belongs to a simian
      *
      * @param dna DNA to be validated and verified
-     * @return true if the DNA belongs a dna, otherwise false
+     * @return true if the DNA belongs a simian, otherwise false
      * @throws InvalidDNAException  when the DNA has invalid format
      * @throws NullPointerException when the DNA is null
      */
