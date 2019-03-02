@@ -1,5 +1,6 @@
 package br.com.hrom.simiantester.api;
 
+import br.com.hrom.simiantester.dna.InvalidDNAException;
 import br.com.hrom.simiantester.service.DNAService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -76,6 +77,31 @@ public class DNARestControllerTest {
                 .andDo(print())
                 .andExpect(status().isForbidden())
                 .andExpect(content().string(""));
+
+        verify(dnaService).isSimian(expectedDNA);
+    }
+
+    @Test
+    public void should_response_with_404_BAD_REQUEST_when_dna_is_invalid() throws Exception {
+        String[] expectedDNA = {"ATGCGA", "CAGTGC", "TTATTT", "AGAAGG", "GCGTCA"}; //6X5 matrix
+        when(dnaService.isSimian(expectedDNA)).thenThrow(new InvalidDNAException("invalid DNA"));
+
+        String request = new StringBuilder()
+                .append("{")
+                    .append("\"dna\": [")
+                        .append("\"ATGCGA\", ")
+                        .append("\"CAGTGC\", ")
+                        .append("\"TTATTT\", ")
+                        .append("\"AGAAGG\", ")
+                        .append("\"GCGTCA\" ")
+                    .append("]")
+                .append("}").toString();
+
+        tester.perform(
+                post("/simian").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE).content(request))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(content().json("{\"messages\":[\"invalid DNA\"]}"));
 
         verify(dnaService).isSimian(expectedDNA);
     }

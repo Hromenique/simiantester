@@ -1,5 +1,6 @@
 package br.com.hrom.simiantester.api;
 
+import br.com.hrom.simiantester.dna.InvalidDNAException;
 import br.com.hrom.simiantester.service.DNAService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,13 +23,16 @@ public class DNARestController {
 
     @PostMapping(path = "/simian", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity isSimian(@RequestBody DNARequest request) {
+        boolean isSimian;
 
-        boolean isSimian = this.dnaService.isSimian(request.getDna());
-
-        if (isSimian) {
-            return new ResponseEntity(HttpStatus.OK);
+        try {
+            isSimian = this.dnaService.isSimian(request.getDna());
+        } catch (InvalidDNAException e) {
+            return ResponseEntity.badRequest()
+                    .contentType(MediaType.APPLICATION_JSON_UTF8)
+                    .body(new ErrorResponse(e.getMessage()));
         }
 
-        return new ResponseEntity(HttpStatus.FORBIDDEN);
+        return isSimian ? new ResponseEntity(HttpStatus.OK) : new ResponseEntity(HttpStatus.FORBIDDEN);
     }
 }
