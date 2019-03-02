@@ -1,6 +1,6 @@
 package br.com.hrom.simiantester.api;
 
-import br.com.hrom.simiantester.dna.DNAService;
+import br.com.hrom.simiantester.service.DNAService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +46,7 @@ public class DNARestControllerTest {
                 .append("}").toString();
 
         tester.perform(
-                post("/simian").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE).content(request))
+                post("/dna").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE).content(request))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().string(isEmptyOrNullString()));
@@ -72,7 +72,7 @@ public class DNARestControllerTest {
                 .append("}").toString();
 
         tester.perform(
-                post("/simian").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE).content(request))
+                post("/dna").contentType(MediaType.APPLICATION_JSON_UTF8_VALUE).content(request))
                 .andDo(print())
                 .andExpect(status().isForbidden())
                 .andExpect(content().string(""));

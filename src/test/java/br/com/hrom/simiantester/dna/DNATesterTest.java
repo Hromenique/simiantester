@@ -1,4 +1,4 @@
-package br.com.hrom.simiantester.simian;
+package br.com.hrom.simiantester.dna;
 
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
@@ -10,18 +10,26 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 
 @RunWith(JUnitParamsRunner.class)
-public class SimianDNATesterTest {
+public class DNATesterTest {
 
-    private SimianDNATester tester = new SimianDNATester();
+    private DNATester tester = new DNATester();
 
     @Test
     @Parameters(method = "humanDNAValues, simianDNAValues")
     public void isSimianTest(String[] dna, boolean expectedResult) {
-        assertThat(tester.isSimian(dna)).as("check if the dna %s is simian", Arrays.toString(dna))
+        assertThat(tester.isSimianDNA(dna)).as("check if the service %s is dna", Arrays.toString(dna))
                 .isEqualTo(expectedResult);
+    }
+
+    @Test
+    @Parameters(method = "exceptionCaseValues")
+    public void should_throw_exceptions_when_the_dna_is_invalid(String[] dna, Class<Exception> typeOfException,
+                                                                String exceptionMessage) {
+        assertThatThrownBy(() -> tester.isSimianDNA(dna)).isInstanceOf(typeOfException).hasMessage(exceptionMessage);
     }
 
     private Object[] humanDNAValues() {
@@ -178,6 +186,39 @@ public class SimianDNATesterTest {
                 "G C G T C A",
                 "T C A C T G"};
         params.add(dnaAndExpectedResult(dna, true));
+
+
+        return params.toArray();
+    }
+
+    private Object[] exceptionCaseValues(){
+        List<Object> params = new ArrayList<>();
+        String[] dna;
+
+        dna = new String[]{
+                "A T C G A A",
+                "T A Z A A A",
+                "G G A A C C",
+                "T T G G C C",
+                "T T C G A A",
+                "G G G T G T"
+        };
+        params.add(new Object[]{formatDNA(dna), InvalidDNAException.class,
+                "DNA have invalid nitrogen bases, the valid nitrogen bases are: A, T, C, G"});
+
+        dna = new String[]{
+                "A T C G A A",
+                "T A C A A A",
+                "G G A A C C",
+                "T T G G C",
+                "T T C G A A",
+                "G G G T G T"
+        };
+        params.add(new Object[]{formatDNA(dna), InvalidDNAException.class,
+                "DNA is not a valid matrix, it must be a N X N matrix"});
+
+
+        params.add(new Object[]{null, NullPointerException.class, "DNA must not be null"});
 
 
         return params.toArray();
