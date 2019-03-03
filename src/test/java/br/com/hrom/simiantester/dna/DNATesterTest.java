@@ -21,7 +21,7 @@ public class DNATesterTest {
     @Test
     @Parameters(method = "humanDNAValues, simianDNAValues")
     public void isSimianTest(String[] dna, boolean expectedResult) {
-        assertThat(tester.isSimian(dna)).as("check if the service %s is dna", Arrays.toString(dna))
+        assertThat(tester.isSimian(dna)).as("check if the dna %s is simian", Arrays.toString(dna))
                 .isEqualTo(expectedResult);
     }
 
