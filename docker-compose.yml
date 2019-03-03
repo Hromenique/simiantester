@@ -6,8 +6,29 @@ services:
       context: ./
       dockerfile: Dockerfile
     image: hromenique/simiantester:latest
+    container_name: simiantester
     ports:
       - 8080:8080
       - 80:8080
+    networks: 
+      - "local-network"
+    depends_on: 
+      - mongodb
+  
+  mongodb:
+    image: mongo
+    container_name: mongodb_simiantester
+    ports: 
+      - 27017:27017
+    networks: 
+      - "local-network"
+    volumes:
+      - /var/www/volumes/mongo:/data/db
+
+networks: 
+  local-network:
+    driver: bridge
+
+
 
 
