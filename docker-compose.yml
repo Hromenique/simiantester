@@ -1,3 +1,13 @@
+#Antes de executar o docker-compose.yml. Sempre faça o build da applicação pelo mvn e o build de uma nova imagem docker.
+# Primeiro faça:
+# mvn clean package
+#
+#Depois faça:
+# docker-compose build
+#
+#Finalmente, faça:
+# docker-compose up
+#
 version: '3'
 
 services:
@@ -10,7 +20,9 @@ services:
     ports:
       - 8080:8080
       - 80:8080
-    networks: 
+    environment: 
+      - PROFILE=docker
+    networks:
       - "local-network"
     depends_on: 
       - mongodb
@@ -20,14 +32,14 @@ services:
     container_name: mongodb_simiantester
     ports: 
       - 27017:27017
-    networks: 
+    networks:
       - "local-network"
     volumes:
       - /var/www/volumes/mongo:/data/db
 
-networks: 
-  local-network:
-    driver: bridge
+networks:
+ local-network:
+   driver: bridge
 
 
 

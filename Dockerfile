@@ -8,9 +8,10 @@
 # docker run -p 8080:8080 --name simiantester hromenique/simiantester:<version>
 
 FROM openjdk:8
-ENV version 1.0.0
+ENV version=1.0.0
+ENV PROFILE=default
 LABEL version=${version}
 COPY target/simiantester*.jar /var/www/app.jar
 EXPOSE 8080
 WORKDIR /var/www
-ENTRYPOINT java -jar app.jar
+ENTRYPOINT java -Dspring.profiles.active=${PROFILE} -jar app.jar
