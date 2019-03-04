@@ -1,17 +1,16 @@
 package br.com.hrom.simiantester.api;
 
 import br.com.hrom.simiantester.dna.InvalidDNAException;
+import br.com.hrom.simiantester.dna.Specie;
 import br.com.hrom.simiantester.service.DNAService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Map;
 
 @CrossOrigin
 @RestController
@@ -38,5 +37,13 @@ public class DNARestController {
         }
 
         return isSimian ? new ResponseEntity(HttpStatus.OK) : new ResponseEntity(HttpStatus.FORBIDDEN);
+    }
+
+    @GetMapping(path = "/stats", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ResponseStatus(HttpStatus.OK)
+    public StatsResponse getStats() {
+        Map<Specie, Long> totalOfDNAsBySpecie = dnaService.getTotalOfDNAsBySpecie();
+
+        return new StatsResponse(totalOfDNAsBySpecie.get(Specie.SIMIAN), totalOfDNAsBySpecie.get(Specie.HUMAN));
     }
 }

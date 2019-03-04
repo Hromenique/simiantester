@@ -1,17 +1,19 @@
 package br.com.hrom.simiantester.service;
 
 import br.com.hrom.simiantester.dna.*;
+import br.com.hrom.simiantester.dna.DNARecordRepository.DNACount;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
+import static br.com.hrom.simiantester.dna.Specie.HUMAN;
+import static br.com.hrom.simiantester.dna.Specie.SIMIAN;
 import static br.com.hrom.simiantester.utils.TestUtils.formatDNA;
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -56,7 +58,7 @@ public class DNAServiceTest {
     }
 
     @Test
-    public void should_isSimian_validate_if_a_dna_is_invalid(){
+    public void should_isSimian_validate_if_a_dna_is_invalid() {
         String[] dna = formatDNA(new String[]{
                 "A T C G",
                 "A T C G",
@@ -70,8 +72,24 @@ public class DNAServiceTest {
         verify(repository, never()).save(any(DNARecord.class));
     }
 
+    @Test
+    @Parameters(method = "getTotalOfDNAsBySpecieTestCaseValues")
+    public void getTotalOfDNAsBySpecieTest(List<DNACount> dnaCountsFromRepository, long expectedTotalOfDNAsHuman,
+                                           long expectedTotalOfDNAsSimian) {
+        when(repository.totalsBySpecie()).thenReturn(dnaCountsFromRepository);
+
+        Map<Specie, Long> totalOfDNAsBySpecie = dnaService.getTotalOfDNAsBySpecie();
+
+        assertThat(totalOfDNAsBySpecie.get(HUMAN)).as("check the total of human's DNAs")
+                .isEqualTo(expectedTotalOfDNAsHuman);
+        assertThat(totalOfDNAsBySpecie.get(SIMIAN)).as("check the total of simian's DNAs")
+                .isEqualTo(expectedTotalOfDNAsSimian);
+
+        verify(repository).totalsBySpecie();
+    }
+
     private Object[] isSimianTestCaseValues() {
-        List<Object> params = new ArrayList<>();
+        List<Object> values = new ArrayList<>();
 
         String[] dna = new String[]{
                 "A T C G",
@@ -79,7 +97,7 @@ public class DNAServiceTest {
                 "A T C G",
                 "G C T A"
         };
-        params.add(new Object[]{formatDNA(dna), false, Specie.HUMAN});
+        values.add(new Object[]{formatDNA(dna), false, HUMAN});
 
 
         dna = new String[]{
@@ -90,9 +108,26 @@ public class DNAServiceTest {
                 "T T C A A A",
                 "G G G T T T"
         };
-        params.add(new Object[]{formatDNA(dna), true, Specie.SIMIAN});
+        values.add(new Object[]{formatDNA(dna), true, SIMIAN});
 
-        return params.toArray();
+        return values.toArray();
+    }
+
+    private Object[] getTotalOfDNAsBySpecieTestCaseValues(){
+        List<Object> values = new ArrayList<>();
+
+        List<DNACount> dnaCounts = asList(new DNACount(HUMAN.name(), 10), new DNACount(SIMIAN.name(), 15));
+        values.add(new Object[] {dnaCounts, 10, 15});
+
+        dnaCounts = asList(new DNACount(HUMAN.name(), 10));
+        values.add(new Object[] {dnaCounts, 10, 0});
+
+        dnaCounts = asList(new DNACount(SIMIAN.name(), 15));
+        values.add(new Object[] {dnaCounts, 0, 15});
+
+        values.add(new Object[] {Collections.emptyList(), 0, 0});
+
+        return values.toArray();
     }
 }
 

@@ -1,6 +1,8 @@
 package br.com.hrom.simiantester.api;
 
+import br.com.hrom.simiantester.dna.DNARecordRepository;
 import br.com.hrom.simiantester.dna.InvalidDNAException;
+import br.com.hrom.simiantester.dna.Specie;
 import br.com.hrom.simiantester.service.DNAService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,9 +13,15 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import static br.com.hrom.simiantester.dna.Specie.HUMAN;
+import static br.com.hrom.simiantester.dna.Specie.SIMIAN;
 import static org.hamcrest.Matchers.isEmptyOrNullString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -36,14 +44,14 @@ public class DNARestControllerTest {
 
         String request = new StringBuilder()
                 .append("{")
-                    .append("\"dna\": [")
-                        .append("\"ATGCGA\", ")
-                        .append("\"CAGTGC\", ")
-                        .append("\"TTATTT\", ")
-                        .append("\"AGAAGG\", ")
-                        .append("\"GCGTCA\", ")
-                        .append("\"TCACTG\"")
-                    .append("]")
+                .append("\"dna\": [")
+                .append("\"ATGCGA\", ")
+                .append("\"CAGTGC\", ")
+                .append("\"TTATTT\", ")
+                .append("\"AGAAGG\", ")
+                .append("\"GCGTCA\", ")
+                .append("\"TCACTG\"")
+                .append("]")
                 .append("}").toString();
 
         tester.perform(
@@ -62,14 +70,14 @@ public class DNARestControllerTest {
 
         String request = new StringBuilder()
                 .append("{")
-                    .append("\"dna\": [")
-                        .append("\"ATGCGA\", ")
-                        .append("\"CAGTGC\", ")
-                        .append("\"TTATTT\", ")
-                        .append("\"AGAAGG\", ")
-                        .append("\"GCGTCA\", ")
-                        .append("\"TCACTG\"")
-                    .append("]")
+                .append("\"dna\": [")
+                .append("\"ATGCGA\", ")
+                .append("\"CAGTGC\", ")
+                .append("\"TTATTT\", ")
+                .append("\"AGAAGG\", ")
+                .append("\"GCGTCA\", ")
+                .append("\"TCACTG\"")
+                .append("]")
                 .append("}").toString();
 
         tester.perform(
@@ -88,13 +96,13 @@ public class DNARestControllerTest {
 
         String request = new StringBuilder()
                 .append("{")
-                    .append("\"dna\": [")
-                        .append("\"ATGCGA\", ")
-                        .append("\"CAGTGC\", ")
-                        .append("\"TTATTT\", ")
-                        .append("\"AGAAGG\", ")
-                        .append("\"GCGTCA\" ")
-                    .append("]")
+                .append("\"dna\": [")
+                .append("\"ATGCGA\", ")
+                .append("\"CAGTGC\", ")
+                .append("\"TTATTT\", ")
+                .append("\"AGAAGG\", ")
+                .append("\"GCGTCA\" ")
+                .append("]")
                 .append("}").toString();
 
         tester.perform(
@@ -104,5 +112,19 @@ public class DNARestControllerTest {
                 .andExpect(content().json("{\"messages\":[\"invalid DNA\"]}"));
 
         verify(dnaService).isSimian(expectedDNA);
+    }
+
+    @Test
+    public void should_return_stats_with_200_OK() throws Exception {
+        Map<Specie, Long> totalsBySpecie = new HashMap<>();
+        totalsBySpecie.put(HUMAN, 20L);
+        totalsBySpecie.put(SIMIAN, 10L);
+
+        when(dnaService.getTotalOfDNAsBySpecie()).thenReturn(totalsBySpecie);
+
+        tester.perform(get("/stats"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().json("{\"count_mutant_dna\": 10, \"count_human_dna\": 20, \"ratio\": 0.5}"));
     }
 }
