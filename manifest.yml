@@ -1,0 +1,4 @@
+---
+applications:
+  - name: simian-tester
+    instances: 1
