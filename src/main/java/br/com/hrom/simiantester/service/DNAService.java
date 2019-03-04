@@ -3,6 +3,8 @@ package br.com.hrom.simiantester.service;
 import br.com.hrom.simiantester.dna.*;
 import br.com.hrom.simiantester.dna.DNARecordRepository.DNACount;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -22,7 +24,9 @@ public class DNAService {
         this.dnaRepository = dnaRepository;
     }
 
+    @CacheEvict(value="totalOfDNAsBySpecie")
     public boolean isSimian(String[] dna) throws InvalidDNAException {
+        System.out.println("entrou");
         isValidDNA(dna);
         boolean isSimian = dnaTester.isSimian(dna);
 
@@ -32,7 +36,9 @@ public class DNAService {
         return isSimian;
     }
 
+    @Cacheable(value="totalOfDNAsBySpecie")
     public Map<Specie, Long> getTotalOfDNAsBySpecie() {
+        System.out.println("totals");
         Map<Specie, Long> totalOfDNAsBySpecie = new HashMap<>();
         totalOfDNAsBySpecie.putIfAbsent(Specie.SIMIAN, 0L);
         totalOfDNAsBySpecie.putIfAbsent(Specie.HUMAN, 0L);
