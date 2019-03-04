@@ -38,7 +38,7 @@ public class DNARecordRepository {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class DNACount {
-        private String specie;
+        private String id;
         private long total;
     }
 }

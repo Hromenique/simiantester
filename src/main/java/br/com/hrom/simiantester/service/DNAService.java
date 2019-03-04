@@ -38,7 +38,7 @@ public class DNAService {
         totalOfDNAsBySpecie.putIfAbsent(Specie.HUMAN, 0L);
 
         for (DNACount count : this.dnaRepository.totalsBySpecie()) {
-            totalOfDNAsBySpecie.put(Specie.valueOf(count.getSpecie()), count.getTotal());
+            totalOfDNAsBySpecie.put(Specie.valueOf(count.getId()), count.getTotal());
         }
 
         return totalOfDNAsBySpecie;
