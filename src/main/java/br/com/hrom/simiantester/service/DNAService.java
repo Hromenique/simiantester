@@ -24,9 +24,8 @@ public class DNAService {
         this.dnaRepository = dnaRepository;
     }
 
-    @CacheEvict(value="totalOfDNAsBySpecie")
+    @CacheEvict(cacheNames="totalOfDNAsBySpecie", allEntries = true)
     public boolean isSimian(String[] dna) throws InvalidDNAException {
-        System.out.println("entrou");
         isValidDNA(dna);
         boolean isSimian = dnaTester.isSimian(dna);
 
@@ -36,9 +35,8 @@ public class DNAService {
         return isSimian;
     }
 
-    @Cacheable(value="totalOfDNAsBySpecie")
+    @Cacheable(cacheNames="totalOfDNAsBySpecie")
     public Map<Specie, Long> getTotalOfDNAsBySpecie() {
-        System.out.println("totals");
         Map<Specie, Long> totalOfDNAsBySpecie = new HashMap<>();
         totalOfDNAsBySpecie.putIfAbsent(Specie.SIMIAN, 0L);
         totalOfDNAsBySpecie.putIfAbsent(Specie.HUMAN, 0L);
