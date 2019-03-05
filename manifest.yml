@@ -2,3 +2,4 @@
 applications:
   - name: simian-tester
     instances: 1
+    path: target/simiantester-1.0.0-SNAPSHOT.jar
